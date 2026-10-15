@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<flowable.version>8.0.0</flowable.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -71,8 +72,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.flowable</groupId>
-			<artifactId>flowable-spring-boot-starter-process</artifactId>
-			<version>8.0.0</version>
+			<artifactId>flowable-spring-boot-starter</artifactId>
+			<version>${flowable.version}</version>
 		</dependency>
 	</dependencies>
 

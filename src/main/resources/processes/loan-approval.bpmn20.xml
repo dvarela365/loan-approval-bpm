@@ -10,11 +10,26 @@
 
         <serviceTask id="validarSolicitud" name="Validar solicitud"
                      flowable:delegateExpression="${validarSolicitudDelegate}"/>
-        <sequenceFlow id="f2" sourceRef="validarSolicitud" targetRef="revisionAnalista"/>
+        <sequenceFlow id="f2" sourceRef="validarSolicitud" targetRef="evaluarReglas"/>
+
+        <serviceTask id="evaluarReglas" name="Evaluar reglas de crédito" flowable:type="dmn">
+            <extensionElements>
+                <flowable:field name="decisionTableReferenceKey">
+                    <flowable:string>aprobacionAutomatica</flowable:string>
+                </flowable:field>
+            </extensionElements>
+        </serviceTask>
+        <sequenceFlow id="f3" sourceRef="evaluarReglas" targetRef="decisionCanal"/>
+
+        <exclusiveGateway id="decisionCanal" name="¿Canal?" default="fManual"/>
+        <sequenceFlow id="fAutomatico" sourceRef="decisionCanal" targetRef="prestamoAprobadoAutomatico">
+            <conditionExpression>${canal == 'AUTOMATICO'}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="fManual" sourceRef="decisionCanal" targetRef="revisionAnalista"/>
 
         <userTask id="revisionAnalista" name="Revisión del analista"
                   flowable:candidateGroups="analistas"/>
-        <sequenceFlow id="f3" sourceRef="revisionAnalista" targetRef="decisionAnalista"/>
+        <sequenceFlow id="f4" sourceRef="revisionAnalista" targetRef="decisionAnalista"/>
 
         <exclusiveGateway id="decisionAnalista" name="¿Aprobado?" default="fRechazado"/>
         <sequenceFlow id="fAprobado" sourceRef="decisionAnalista" targetRef="prestamoAprobado">
@@ -22,6 +37,7 @@
         </sequenceFlow>
         <sequenceFlow id="fRechazado" sourceRef="decisionAnalista" targetRef="prestamoRechazado"/>
 
+        <endEvent id="prestamoAprobadoAutomatico" name="Aprobado automáticamente"/>
         <endEvent id="prestamoAprobado" name="Préstamo aprobado"/>
         <endEvent id="prestamoRechazado" name="Préstamo rechazado"/>
     </process>

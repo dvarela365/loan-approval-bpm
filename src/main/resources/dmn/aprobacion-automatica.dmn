@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101"
+             id="reglasCredito" name="Reglas de crédito"
+             namespace="http://portfolio.com/loan">
+
+  <decision id="aprobacionAutomatica" name="Aprobación automática">
+    <decisionTable id="tablaAprobacion" hitPolicy="FIRST">
+
+      <input id="inMonto" label="Monto">
+        <inputExpression id="exprMonto" typeRef="number">
+          <text>monto</text>
+        </inputExpression>
+      </input>
+
+      <output id="outCanal" label="Canal" name="canal" typeRef="string"/>
+
+      <rule id="montoChico">
+        <inputEntry id="montoChicoIn"><text><![CDATA[<= 500000]]></text></inputEntry>
+        <outputEntry id="montoChicoOut"><text>"AUTOMATICO"</text></outputEntry>
+      </rule>
+      <rule id="montoGrande">
+        <inputEntry id="montoGrandeIn"><text><![CDATA[> 500000]]></text></inputEntry>
+        <outputEntry id="montoGrandeOut"><text>"MANUAL"</text></outputEntry>
+      </rule>
+
+    </decisionTable>
+  </decision>
+</definitions>

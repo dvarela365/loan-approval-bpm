@@ -37,7 +37,7 @@ public class LoanController {
                 "solicitante", request.solicitante(),
                 "monto", request.monto()));
         return ResponseEntity.created(URI.create("/loans/" + loanId))
-                .body(new LoanStatus(loanId, "EN_REVISION"));
+                .body(estado(loanId));
     }
 
     @GetMapping("/{loanId}")
@@ -52,6 +52,7 @@ public class LoanController {
                 : switch (instancia.getEndActivityId()) {
             case "prestamoAprobado" -> "APROBADO";
             case "prestamoRechazado" -> "RECHAZADO";
+            case "prestamoAprobadoAutomatico" -> "APROBADO_AUTOMATICO";
             default -> "FINALIZADO";
         };
         return new LoanStatus(loanId, estado);
