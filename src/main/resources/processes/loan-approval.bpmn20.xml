@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://portfolio.com/loan">
+
+    <process id="loanApproval" name="Aprobación de préstamo" isExecutable="true">
+
+        <startEvent id="solicitudRecibida" name="Solicitud recibida"/>
+        <sequenceFlow id="f1" sourceRef="solicitudRecibida" targetRef="validarSolicitud"/>
+
+        <serviceTask id="validarSolicitud" name="Validar solicitud"
+                     flowable:delegateExpression="${validarSolicitudDelegate}"/>
+        <sequenceFlow id="f2" sourceRef="validarSolicitud" targetRef="revisionAnalista"/>
+
+        <userTask id="revisionAnalista" name="Revisión del analista"
+                  flowable:candidateGroups="analistas"/>
+        <sequenceFlow id="f3" sourceRef="revisionAnalista" targetRef="decisionAnalista"/>
+
+        <exclusiveGateway id="decisionAnalista" name="¿Aprobado?" default="fRechazado"/>
+        <sequenceFlow id="fAprobado" sourceRef="decisionAnalista" targetRef="prestamoAprobado">
+            <conditionExpression>${aprobado}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="fRechazado" sourceRef="decisionAnalista" targetRef="prestamoRechazado"/>
+
+        <endEvent id="prestamoAprobado" name="Préstamo aprobado"/>
+        <endEvent id="prestamoRechazado" name="Préstamo rechazado"/>
+    </process>
+</definitions>
